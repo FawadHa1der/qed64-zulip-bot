@@ -1,7 +1,7 @@
 # "Open in QED64" from the Lean Zulip: design and handover
 
-Status: design accepted by the owner on 2026-10-16; implementation in progress on two
-branches (below). This file is the single place a new session or model needs in
+Status: design accepted by the owner on 2026-10-16; implemented and verified the same day on
+two branches (below), awaiting the owner's merge, bot creation and deploy (§7). This file is the single place a new session or model needs in
 order to continue: what is being built, why it is shaped this way, the facts that were
 measured, the invariants that must hold, how to test, how to deploy, and what is still
 the owner's decision. The research behind it is `../reports/Zulip bot and partial
@@ -343,6 +343,6 @@ qed64-zulip/
 - [x] Page: consent gate + persistence flag + e2e scenario + docs (e2e run pending, §6).
 - [x] Worker: extract/link/worker + fixtures + tests + README (49 node tests).
 - [x] Cross-check vector pinned in both repos (identical `codez`; the ports agree on 1,512 texts and on corrupt input: null).
-- [ ] Verification (§6) incl. e2e in Chromium and Firefox.
+- [x] Verification (§6), 2026-10-16: unit 1054 green, tsc, typecheck:site, build:site; e2e on a served build of the branch 24/24 in Chromium and 24/24 in Firefox (`shared-link-gate` passing in both: gate while booting, not opened before the click, opened on click, fragment cleared, buffer untouched, 0 console errors); a link built by the Worker's own `linkFor` opened in the page, checked a Mathlib snippet to ready, left the visitor's saved buffer intact, and no gate appeared without a fragment. Page commit: `feature/zulip-link` (one commit over main 52e3885); bot commit `5c64771` on `feature/bot-v1`.
 - [ ] Owner: merge + push the page; create the bot; deploy the Worker; private tests.
 - [ ] Owner: the `#Zulip meta` post.
