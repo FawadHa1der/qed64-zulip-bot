@@ -137,7 +137,7 @@ page change ships.
 
 ### 4.1 Behaviour
 1. `codeFromHash` accepts `#codez=<LZ-string base64 without padding>` in addition to
-   `#code=`. Decoding uses a vendored LZ-string (`lib/lz-string.ts`, MIT, the
+   `#code=`. Decoding uses a vendored LZ-string (`frontend/src/lz-string.ts`, MIT, the
    `decompressFromBase64` path plus `compressToBase64` for tests and future use; no
    npm dependency). Padding is tolerated; a string that does not decode, or decodes to
    more than 2 MiB, yields null, as `#code=` does today. If the URI-safe alphabet is
@@ -185,8 +185,9 @@ page change ships.
 
 ### 4.3 Files
 - `frontend/src/page-api.ts`: `codeFromHash` (+ `codez`), export `sharedLinkFlags`.
-- `lib/lz-string.ts`: vendored LZ-string (compress/decompress base64 and the URI-safe
-  variant), with the MIT notice; a unit test round-trips and pins lean4web's exact
+- `frontend/src/lz-string.ts` (not `lib/`: `lib/` is the shipped `qed64/embed` closure, pinned by
+  tests/unit/package-contract.test.ts and lib-root.test.ts; the port is page-tier code beside its
+  one caller): vendored LZ-string (compress/decompress base64 and the URI-safe variant), with the MIT notice; a unit test round-trips and pins lean4web's exact
   writer (`compressToBase64(...).replace(/=*$/, '')`).
 - `frontend/src/main.ts`: the gate (a small function building the panel with DOM
   APIs, inserted into `#bar`'s parent or `document.body` with a fixed position and a
@@ -274,7 +275,7 @@ qed64-zulip/
   mismatch → 401; bot sender → response_not_required; mention with code → 200 JSON
   with a link whose fragment decodes back to the code; DM trigger → same; GET → ok.
 - A cross-check fixture: the same `codez` value decodes with QED64's vendored
-  `lib/lz-string.ts` (copy the test vector from the page's unit test into both repos so
+  `frontend/src/lz-string.ts` (copy the test vector from the page's unit test into both repos so
   the two implementations are pinned to the same bytes).
 
 ## 6. Verification the owner's session performs before asking for a merge
@@ -338,10 +339,10 @@ qed64-zulip/
 ## 10. Status checklist (update as work lands)
 - [x] Research and decision (2026-10-16).
 - [x] Branches: `qed64` `feature/zulip-link`, `qed64-zulip` `feature/bot-v1`; this doc.
-- [ ] Page: `#codez=` + vendored LZ-string + unit tests.
-- [ ] Page: consent gate + persistence flag + e2e scenario + docs.
-- [ ] Worker: extract/link/worker + fixtures + tests + README.
-- [ ] Cross-check vector pinned in both repos.
+- [x] Page: `#codez=` + vendored LZ-string + unit tests (2026-10-16; byte-identical to lz-string 1.5.0 on 1,512 texts).
+- [x] Page: consent gate + persistence flag + e2e scenario + docs (e2e run pending, §6).
+- [x] Worker: extract/link/worker + fixtures + tests + README (49 node tests).
+- [x] Cross-check vector pinned in both repos (identical `codez`; the ports agree on 1,512 texts and on corrupt input: null).
 - [ ] Verification (§6) incl. e2e in Chromium and Firefox.
 - [ ] Owner: merge + push the page; create the bot; deploy the Worker; private tests.
 - [ ] Owner: the `#Zulip meta` post.

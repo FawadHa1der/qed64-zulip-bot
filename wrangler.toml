@@ -1,0 +1,11 @@
+# qed64-zulip-bot: deployed by the owner with `npx --prefix ../qed64 wrangler deploy`
+# (wrangler lives in ../qed64/node_modules; this repository has no dependencies).
+# The secret ZULIP_BOT_TOKEN is set once with `wrangler secret put ZULIP_BOT_TOKEN`
+# and never appears in this file. See README.md for the runbook.
+
+name = "qed64-zulip-bot"
+main = "src/worker.mjs"
+compatibility_date = "2026-08-01" # must not exceed what ../qed64's wrangler bundles (workerd 2026-08-20 today); nothing here needs a newer date
+
+[vars]
+QED64_ORIGIN = "https://qed64.fawadworkaddress.workers.dev"

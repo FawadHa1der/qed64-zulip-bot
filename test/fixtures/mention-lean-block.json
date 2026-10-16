@@ -1,0 +1,29 @@
+{
+  "bot_email": "qed64-bot@leanprover.zulipchat.com",
+  "bot_full_name": "qed64",
+  "data": "@**qed64** can you open this?\n```lean4\nimport Mathlib\n\nexample (x : ℝ) (h : 0 < x) : 0 < x ^ 2 + x := by positivity\n```",
+  "message": {
+    "avatar_url": null,
+    "client": "website",
+    "content": "@**qed64** can you open this?\n```lean4\nimport Mathlib\n\nexample (x : ℝ) (h : 0 < x) : 0 < x ^ 2 + x := by positivity\n```",
+    "content_type": "text/x-markdown",
+    "display_recipient": "new members",
+    "id": 576160900,
+    "is_me_message": false,
+    "reactions": [],
+    "recipient_id": 20,
+    "rendered_content": "<p><span class=\"user-mention\" data-user-id=\"930001\">@qed64</span> can you open this?</p>\n<div class=\"codehilite\" data-code-language=\"Lean4\"><pre><span></span><code><span class=\"kn\">import</span><span class=\"w\"> </span><span class=\"n\">Mathlib</span>\n\n<span class=\"kn\">example</span><span class=\"w\"> </span><span class=\"o\">(</span><span class=\"n\">x</span><span class=\"w\"> </span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"bp\">ℝ</span><span class=\"o\">)</span><span class=\"w\"> </span><span class=\"o\">(</span><span class=\"n\">h</span><span class=\"w\"> </span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"mi\">0</span><span class=\"w\"> </span><span class=\"bp\">&lt;</span><span class=\"w\"> </span><span class=\"n\">x</span><span class=\"o\">)</span><span class=\"w\"> </span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"mi\">0</span><span class=\"w\"> </span><span class=\"bp\">&lt;</span><span class=\"w\"> </span><span class=\"n\">x</span><span class=\"w\"> </span><span class=\"bp\">^</span><span class=\"w\"> </span><span class=\"mi\">2</span><span class=\"w\"> </span><span class=\"bp\">+</span><span class=\"w\"> </span><span class=\"n\">x</span><span class=\"w\"> </span><span class=\"bp\">:=</span><span class=\"w\"> </span><span class=\"k\">by</span><span class=\"w\"> </span><span class=\"n\">positivity</span>\n</code></pre></div>",
+    "sender_email": "user120001@leanprover.zulipchat.com",
+    "sender_full_name": "Alice Example",
+    "sender_id": 120001,
+    "sender_realm_str": "leanprover",
+    "stream_id": 113489,
+    "subject": "QED64 bot test",
+    "submessages": [],
+    "timestamp": 1790000000,
+    "topic_links": [],
+    "type": "stream"
+  },
+  "token": "test-token-0123456789abcdef0123",
+  "trigger": "mention"
+}

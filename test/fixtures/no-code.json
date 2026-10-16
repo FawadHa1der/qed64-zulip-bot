@@ -1,0 +1,29 @@
+{
+  "bot_email": "qed64-bot@leanprover.zulipchat.com",
+  "bot_full_name": "qed64",
+  "data": "@**qed64** Zulip is the world’s most productive group chat!",
+  "message": {
+    "avatar_url": null,
+    "client": "website",
+    "content": "@**qed64** Zulip is the world’s most productive group chat!",
+    "content_type": "text/x-markdown",
+    "display_recipient": "new members",
+    "id": 576160904,
+    "is_me_message": false,
+    "reactions": [],
+    "recipient_id": 20,
+    "rendered_content": "<p><span class=\"user-mention\" data-user-id=\"930001\">@qed64</span> Zulip is the world’s most productive group chat!</p>",
+    "sender_email": "user120001@leanprover.zulipchat.com",
+    "sender_full_name": "Alice Example",
+    "sender_id": 120001,
+    "sender_realm_str": "leanprover",
+    "stream_id": 113489,
+    "subject": "QED64 bot test",
+    "submessages": [],
+    "timestamp": 1790000240,
+    "topic_links": [],
+    "type": "stream"
+  },
+  "token": "test-token-0123456789abcdef0123",
+  "trigger": "mention"
+}

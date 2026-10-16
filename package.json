@@ -1,0 +1,14 @@
+{
+  "name": "qed64-zulip-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker answering the Lean Zulip's @qed64 outgoing webhook with an Open-in-QED64 link",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

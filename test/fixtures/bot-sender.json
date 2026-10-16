@@ -1,0 +1,30 @@
+{
+  "bot_email": "qed64-bot@leanprover.zulipchat.com",
+  "bot_full_name": "qed64",
+  "data": "@**qed64** minimized:\n```lean\nexample : 2 + 2 = 4 := by rfl\n```",
+  "message": {
+    "avatar_url": null,
+    "client": "website",
+    "content": "@**qed64** minimized:\n```lean\nexample : 2 + 2 = 4 := by rfl\n```",
+    "content_type": "text/x-markdown",
+    "display_recipient": "new members",
+    "id": 576160905,
+    "is_me_message": false,
+    "reactions": [],
+    "recipient_id": 20,
+    "rendered_content": "<p><span class=\"user-mention\" data-user-id=\"930001\">@qed64</span> minimized:</p>\n<div class=\"codehilite\" data-code-language=\"Lean\"><pre><span></span><code><span class=\"kn\">example</span><span class=\"w\"> </span><span class=\"o\">:</span><span class=\"w\"> </span><span class=\"mi\">2</span><span class=\"w\"> </span><span class=\"bp\">+</span><span class=\"w\"> </span><span class=\"mi\">2</span><span class=\"w\"> </span><span class=\"bp\">=</span><span class=\"w\"> </span><span class=\"mi\">4</span><span class=\"w\"> </span><span class=\"bp\">:=</span><span class=\"w\"> </span><span class=\"k\">by</span><span class=\"w\"> </span><span class=\"n\">rfl</span>\n</code></pre></div>",
+    "sender_email": "mwe-bot@leanprover.zulipchat.com",
+    "sender_full_name": "MWE bot",
+    "sender_id": 940002,
+    "sender_realm_str": "leanprover",
+    "stream_id": 113489,
+    "subject": "QED64 bot test",
+    "submessages": [],
+    "timestamp": 1790000300,
+    "topic_links": [],
+    "type": "stream",
+    "sender_is_bot": true
+  },
+  "token": "test-token-0123456789abcdef0123",
+  "trigger": "mention"
+}
