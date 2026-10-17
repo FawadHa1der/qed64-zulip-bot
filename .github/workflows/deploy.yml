@@ -1,5 +1,5 @@
-# CI/CD for the qed64-zulip-bot Worker. `npm test` runs on every push and pull request;
-# a push to main (or a manual run) then deploys with wrangler. Required repository
+# CI/CD for the qed64-zulip-bot Worker. `npm test` runs on a push to main, on every pull
+# request and on a manual run; a push to main (or the manual run) then deploys with wrangler. Required repository
 # secrets: CLOUDFLARE_API_TOKEN (an API token with Workers Scripts: Edit on the account)
 # and CLOUDFLARE_ACCOUNT_ID. The Zulip token is a Worker secret (ZULIP_BOT_TOKEN, set
 # once with `wrangler secret put`, outside this workflow) and survives every deploy.
@@ -13,9 +13,6 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-concurrency:
-  group: deploy
-  cancel-in-progress: false
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -28,6 +25,9 @@ jobs:
   deploy:
     if: github.event_name != 'pull_request'
     needs: test
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

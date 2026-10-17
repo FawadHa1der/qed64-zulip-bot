@@ -210,8 +210,8 @@ page change ships.
 
 ## 5. The Worker contract (`qed64-zulip`, `main`)
 
-### 5.1 Layout (no npm dependencies; Node 26 runs the tests; wrangler comes from
-`../qed64/node_modules`)
+### 5.1 Layout (no npm dependencies; the tests need Node 22+; wrangler is fetched pinned,
+`npx --yes wrangler@4.125.0`, by the workflow and by hand)
 ```
 qed64-zulip/
   src/worker.mjs      export default { fetch }: routing, token check, reply shapes
@@ -301,10 +301,22 @@ qed64-zulip/
    webhook**, full name `qed64` (the mention becomes `@**qed64**`), a username, an
    avatar if desired, **Endpoint URL** = the Worker URL (after step 3), **Interface**:
    Generic. Download its `zuliprc`; the `token` line is the webhook token.
-3. Put the Worker on Cloudflare: create the GitHub repository (`FawadHa1der/qed64-zulip-bot`,
-   public, MIT), set its two repository secrets `CLOUDFLARE_API_TOKEN` (Workers Scripts:
-   Edit) and `CLOUDFLARE_ACCOUNT_ID`, push `main`; `.github/workflows/deploy.yml` runs
-   `npm test` and `wrangler deploy` (wrangler 4.125.0, pinned). Then, once, from
+3. Put the Worker on Cloudflare. First publication, once, on the original machine: the
+   rebuilt research-free history is the branch `publish`; the old local `main` and
+   `feature/bot-v1` still carry the research notes and must never be pushed. From
+   `qed64-zulip`:
+
+        git branch -m main archive/main-with-research
+        git branch -m feature/bot-v1 archive/bot-v1-with-research
+        git branch -m publish main
+        git ls-tree -r --name-only main | grep -E '^(reports|research_notes)/'   # must print nothing
+        gh repo create FawadHa1der/qed64-zulip-bot --public --source=. --remote=origin
+        gh secret set CLOUDFLARE_API_TOKEN      # Workers Scripts: Edit
+        gh secret set CLOUDFLARE_ACCOUNT_ID
+        git push -u origin main
+
+   `.github/workflows/deploy.yml` then runs `npm test` and `wrangler deploy` (wrangler
+   4.125.0, pinned). Then, once, from
    `qed64-zulip`: `npx --yes wrangler@4.125.0 login` and `npx --yes wrangler@4.125.0
    secret put ZULIP_BOT_TOKEN` (paste the token). The Worker URL is
    `https://qed64-zulip-bot.<account>.workers.dev`; put it in the bot's Endpoint URL
@@ -335,9 +347,10 @@ qed64-zulip/
   qed64-wt-modular/work/HANDOVER-2026-10-05.md`), never committed; memory index:
   `~/.claude/projects/-Users-fawadhaider-code-wasm64-lean-fable/memory/MEMORY.md`
   (`zulip-bot-decision.md`, `zulip-link-handover.md`).
-- `qed64-zulip`: the research notes are gitignored, and the pre-2026-10-17 history
-  that contained them lives only on the local `archive/*` branches; push `main`
-  alone, never `--all` or `--mirror`.
+- `qed64-zulip`: the research notes are gitignored; the pre-2026-10-17 history that
+  contained them stays on this machine (local `main` and `feature/bot-v1`, renamed
+  `archive/*` by the first-publication step in §7.3); push `main` alone, never
+  `--all` or `--mirror`.
 - Commits end with `Co-Authored-By: Claude <model> <noreply@anthropic.com>` as the
   session's attribution line says.
 - The owner's standard: the simplest maintainable architecture; docs state what was
@@ -348,9 +361,9 @@ qed64-zulip/
 - [x] Branches: `qed64` `feature/zulip-link`, `qed64-zulip` `feature/bot-v1` (folded into `main` on 2026-10-17); this doc.
 - [x] Page: `#codez=` + vendored LZ-string + unit tests (2026-10-16; byte-identical to lz-string 1.5.0 on 1,512 texts).
 - [x] Page: consent gate + persistence flag + e2e scenario + docs (e2e run pending, §6).
-- [x] Worker: extract/link/worker + fixtures + tests + README (49 node tests).
+- [x] Worker: extract/link/worker + fixtures + tests + README (51 node tests).
 - [x] Cross-check vector pinned in both repos (identical `codez`; the ports agree on 1,512 texts and on corrupt input: null).
 - [x] Verification (§6), 2026-10-16: unit 1054 green, tsc, typecheck:site, build:site; e2e on a served build of the branch 24/24 in Chromium and 24/24 in Firefox (`shared-link-gate` passing in both: gate while booting, not opened before the click, opened on click, fragment cleared, buffer untouched, 0 console errors); a link built by the Worker's own `linkFor` opened in the page, checked a Mathlib snippet to ready, left the visitor's saved buffer intact, and no gate appeared without a fragment. Page commit: `feature/zulip-link` (one commit over main 52e3885); bot commit "bot v1: a stateless Cloudflare Worker …", now on `main` (its hash changed when the history was rebuilt without the research notes on 2026-10-17).
-- [x] Repository prepared for GitHub (2026-10-17): history rebuilt without the research notes (now gitignored), MIT `LICENSE`, `.github/workflows/deploy.yml` (`npm test` on every push and pull request, `wrangler deploy` on a push to main).
+- [x] Repository prepared for GitHub (2026-10-17): history rebuilt without the research notes (now gitignored), MIT `LICENSE`, `.github/workflows/deploy.yml` (`npm test` on a push to main and on pull requests, then `wrangler deploy`).
 - [ ] Owner: merge + push the page; create the GitHub repository and its two secrets, push `main`; create the bot; `wrangler secret put ZULIP_BOT_TOKEN`; private tests.
 - [ ] Owner: the `#Zulip meta` post.

@@ -58,7 +58,7 @@ encodes to
 
 `test/fixtures/*.json` are outgoing-webhook payloads in Zulip's documented shape with the
 markup Zulip 12 renders on leanprover.zulipchat.com: a mention with a Lean4 block, a
-quote-and-reply (outer ```` ```` ```` fence longer than the inner ```` ``` ````; the code
+quote-and-reply (a four-backtick outer fence around the three-backtick inner one; the code
 inside a `<blockquote>`), an untagged block rendered as Lean4 (the org default), several
 blocks with a prose-language block first, no code, a bot sender, a 10,000-character
 truncated quote, and a direct message. `test/worker.test.mjs` drives
@@ -80,9 +80,11 @@ Workers.
 3. Put the Worker on Cloudflare. Pushing `main` deploys it: `.github/workflows/deploy.yml`
    runs `npm test`, then `wrangler deploy` (wrangler 4.125.0, pinned there). The
    workflow needs two repository secrets, `CLOUDFLARE_API_TOKEN` (an API token with
-   *Workers Scripts: Edit* on the account) and `CLOUDFLARE_ACCOUNT_ID`; set them before
-   the first push so that the first run deploys:
+   *Workers Scripts: Edit* on the account) and `CLOUDFLARE_ACCOUNT_ID`; create the
+   repository and set them before the first push so that the first run deploys (push
+   `main` alone, never `--all` or `--mirror`):
 
+        gh repo create FawadHa1der/qed64-zulip-bot --public --source=. --remote=origin
         gh secret set CLOUDFLARE_API_TOKEN      # prompts for the value
         gh secret set CLOUDFLARE_ACCOUNT_ID
         git push -u origin main
@@ -131,7 +133,7 @@ message would need the Zulip REST API with the bot's API key.
     test/              node --test suites and the fixture payloads
     wrangler.toml      name, main, compatibility_date, [vars] QED64_ORIGIN
     docs/DESIGN.md     the design and handover document for both halves
-    .github/workflows/deploy.yml   npm test on every push and pull request; wrangler deploy on a push to main
+    .github/workflows/deploy.yml   npm test on a push to main and on pull requests; then wrangler deploy
     LICENSE            MIT
 
 Rules of this machine (docs/DESIGN.md §9): never `git push`, never `npm install`, the
