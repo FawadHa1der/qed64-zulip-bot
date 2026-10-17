@@ -169,8 +169,8 @@ page change ships.
    - **Dismiss**: closes the panel and drops the fragment; nothing else changes.
    - Reload with the fragment still present (neither button clicked): the gate shows
      again; this is intended (the link stays shareable until acted on).
-   - A boot that fails removes the panel (the snippet could not open); the fragment
-     stays, so the failure card's Reload offers the link again (added 2026-10-17).
+   - A boot that fails removes the panel; the fragment stays, so the failure card's
+     Reload offers the link again (added 2026-10-17).
 4. No new query parameter, no new page-API method or event in v1 (`API_REVISION`
    and `EMBED_API_REVISION` unchanged); `codeFromHash` is page-tier code.
 
