@@ -31,7 +31,7 @@ Decisions already taken by the owner (do not reopen):
 
 | Half | Repository / branch | Worktree | Deploy |
 |---|---|---|---|
-| QED64 page: `#codez=` decoding + a consent gate for top-level share links | `qed64`, branch `feature/zulip-link` (from main `52e3885`) | `/Users/fawadhaider/code/wasm64-lean-fable/qed64-wt-zulip` (node_modules symlinked to `../qed64/node_modules`, `frontend/node_modules` likewise) | merged to main by the owner; the push deploys (GitHub Actions → Cloudflare) |
+| QED64 page: `#codez=` decoding + a consent gate for top-level share links | `qed64`, branch `feature/zulip-link` (cut from main `52e3885`; rebased onto main `58ebbad` on 2026-10-17: two commits, the gate and its review follow-ups) | `/Users/fawadhaider/code/wasm64-lean-fable/qed64-wt-zulip` (node_modules symlinked to `../qed64/node_modules`, `frontend/node_modules` likewise) | merged to main by the owner; the push deploys (GitHub Actions → Cloudflare) |
 | The bot: a Cloudflare Worker answering Zulip's outgoing webhook | `qed64-zulip`, branch `main` (GitHub `FawadHa1der/qed64-zulip-bot`, public, MIT; the research notes stay local, gitignored) | `/Users/fawadhaider/code/wasm64-lean-fable/qed64-zulip` | pushed by the owner; GitHub Actions runs `npm test` and `wrangler deploy` on every push to main (repository secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`); the Zulip bot and its token are the owner's |
 
 The page half is a prerequisite: today a top-level `#code=` link is **silently
@@ -108,7 +108,7 @@ page change ships.
   imports boots the light (Init) session, which is correct for 74% and a one-click
   "Load Mathlib" away for the rest (existing UI).
 
-### 3.4 QED64 today (main `52e3885`, live at https://qed64.fawadworkaddress.workers.dev/)
+### 3.4 QED64 as measured on 2026-10-16 (main `52e3885`, live at https://qed64.fawadworkaddress.workers.dev/)
 - `frontend/src/page-api.ts` `codeFromHash(hash)`: parses only `#code=` (≤ 2 MiB after
   percent-decoding); `#codez=` returns null (pinned by `tests/unit/page-api.test.ts:205`).
 - `frontend/src/main.ts` ~L40-46 and ~L440-452: a boot document from the fragment is
@@ -169,6 +169,8 @@ page change ships.
    - **Dismiss**: closes the panel and drops the fragment; nothing else changes.
    - Reload with the fragment still present (neither button clicked): the gate shows
      again; this is intended (the link stays shareable until acted on).
+   - A boot that fails removes the panel (the snippet could not open); the fragment
+     stays, so the failure card's Reload offers the link again (added 2026-10-17).
 4. No new query parameter, no new page-API method or event in v1 (`API_REVISION`
    and `EMBED_API_REVISION` unchanged); `codeFromHash` is page-tier code.
 
@@ -205,7 +207,8 @@ page change ships.
   it states one.
 - Docs: `docs/EMBEDDING.md` §3.1 (the top-level gate; `#codez=`), §4 table row
   `#codez=`, §12 changelog bullet; `docs/HARDENING.md` new entry "A share link on the
-  plain page opens behind a consent gate" (the threat, the measured link sizes, what
+  plain page opens behind a consent gate" (#77; #76 went to the memory-at-ready fix
+  that landed on main first) (the threat, the measured link sizes, what
   was tested); `README.md` line 68 (`#code=` note) updated.
 
 ## 5. The Worker contract (`qed64-zulip`, `main`)
@@ -364,6 +367,7 @@ qed64-zulip/
 - [x] Worker: extract/link/worker + fixtures + tests + README (51 node tests).
 - [x] Cross-check vector pinned in both repos (identical `codez`; the ports agree on 1,512 texts and on corrupt input: null).
 - [x] Verification (§6), 2026-10-16: unit 1054 green, tsc, typecheck:site, build:site; e2e on a served build of the branch 24/24 in Chromium and 24/24 in Firefox (`shared-link-gate` passing in both: gate while booting, not opened before the click, opened on click, fragment cleared, buffer untouched, 0 console errors); a link built by the Worker's own `linkFor` opened in the page, checked a Mathlib snippet to ready, left the visitor's saved buffer intact, and no gate appeared without a fragment. Page commit: `feature/zulip-link` (one commit over main 52e3885); bot commit "bot v1: a stateless Cloudflare Worker …", now on `main` (its hash changed when the history was rebuilt without the research notes on 2026-10-17).
+- [x] Rebase (2026-10-17): main gained `58ebbad` (another session's memory-at-ready fix, which took HARDENING #76), so the owner's fast-forward failed. `feature/zulip-link` was rebased onto it (the gate commit is now `ab82eb9`, its HARDENING entry #77; a range-diff shows only the renumbering) and gained `00bb310` from a read-only review of the merged tree: a failed boot removes the gate, "restored your last buffer" is not shown after Open replaced it, the embed-mode warning names `#codez=`, and doc fixes. Re-verified on a served build of `00bb310`: unit 1054, tsc, typecheck:site, build:site; e2e 24/24 in Chromium and 24/24 in Firefox; page-api 7/7 (incl. the memory fix's scenario); a Worker-built link opens, checks and leaves the saved buffer intact; a failed boot (profile index aborted 3 s in) shows the gate first and none after, keeping the failure reason, Reload and the fragment, in both engines.
 - [x] Repository prepared for GitHub (2026-10-17): history rebuilt without the research notes (now gitignored), MIT `LICENSE`, `.github/workflows/deploy.yml` (`npm test` on a push to main and on pull requests, then `wrangler deploy`).
 - [ ] Owner: merge + push the page; create the GitHub repository and its two secrets, push `main`; create the bot; `wrangler secret put ZULIP_BOT_TOKEN`; private tests.
 - [ ] Owner: the `#Zulip meta` post.
