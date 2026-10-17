@@ -65,7 +65,7 @@ truncated quote, and a direct message. `test/worker.test.mjs` drives
 `worker.fetch(new Request(...), env)` directly, so the same code runs under Node and on
 Workers.
 
-## Runbook (the owner's steps; wrangler comes from `../qed64/node_modules`)
+## Runbook (the owner's steps)
 
 1. Ship the page half first: merge `qed64` `feature/zulip-link` and push (the deploy
    publishes the consent gate). Verify live: open
@@ -77,29 +77,38 @@ Workers.
    avatar if desired, **Endpoint URL** = the Worker URL from step 3 (can be filled in
    afterwards), **Interface**: Generic. Download its `zuliprc`; the `token` line is the
    webhook token (the secret below).
-3. Deploy from this directory:
+3. Put the Worker on Cloudflare. Pushing `main` deploys it: `.github/workflows/deploy.yml`
+   runs `npm test`, then `wrangler deploy` (wrangler 4.125.0, pinned there). The
+   workflow needs two repository secrets, `CLOUDFLARE_API_TOKEN` (an API token with
+   *Workers Scripts: Edit* on the account) and `CLOUDFLARE_ACCOUNT_ID`; set them before
+   the first push so that the first run deploys:
 
-        npx --prefix ../qed64 wrangler login                       # once
-        npx --prefix ../qed64 wrangler secret put ZULIP_BOT_TOKEN  # paste the token
-        npx --prefix ../qed64 wrangler deploy
+        gh secret set CLOUDFLARE_API_TOKEN      # prompts for the value
+        gh secret set CLOUDFLARE_ACCOUNT_ID
+        git push -u origin main
 
-   Note the `https://qed64-zulip-bot.<account>.workers.dev` URL and put it in the bot's
-   Endpoint URL. `GET` on that URL answers `ok`. To change the target page, edit
-   `QED64_ORIGIN` in `wrangler.toml` and redeploy.
+   Then give the Worker its one secret (the `token` line of the bot's `zuliprc`; the
+   command prompts for it; `login` once before):
+
+        npx --yes wrangler@4.125.0 login
+        npx --yes wrangler@4.125.0 secret put ZULIP_BOT_TOKEN
+
+   The Worker answers at `https://qed64-zulip-bot.<account>.workers.dev` (`GET` → `ok`);
+   that URL is the bot's Endpoint URL. Secrets survive every deploy. A deploy by hand
+   is the workflow's own command, `npx --yes wrangler@4.125.0 deploy`. To change the
+   target page, edit `QED64_ORIGIN` in `wrangler.toml` and push.
 4. Test privately: DM the bot a ```lean block; then in a quiet channel, mention it next
    to a block; then quote-and-reply a message with a block and mention it. Optional
-   local replay before deploying:
+   local replay before pushing:
 
-        npx --prefix ../qed64 wrangler dev
-
-   (`compatibility_date` in wrangler.toml must not exceed the workerd that ../qed64's
-   wrangler bundles, 2026-08-20 today; the file says 2026-08-01.)
+        npx --yes wrangler@4.125.0 dev
         curl -s -X POST http://localhost:8787/ -H 'content-type: application/json' \
           --data @test/fixtures/mention-lean-block.json
 
    (`wrangler dev` reads the secret from a local `.dev.vars` with
    `ZULIP_BOT_TOKEN=test-token-0123456789abcdef0123`, the fixtures' token; do not commit
-   that file.)
+   that file. `compatibility_date` in wrangler.toml must not exceed the workerd that the
+   pinned wrangler bundles, 2026-08-20 for 4.125.0; the file says 2026-08-01.)
 5. Community step, one short factual post in `#Zulip meta`: what the bot does; that it
    only answers mentions (and DMs); where the code goes (nowhere: it is in the link's
    fragment, which browsers never send to a server); that checking runs in the reader's
@@ -122,6 +131,16 @@ message would need the Zulip REST API with the bot's API key.
     test/              node --test suites and the fixture payloads
     wrangler.toml      name, main, compatibility_date, [vars] QED64_ORIGIN
     docs/DESIGN.md     the design and handover document for both halves
+    .github/workflows/deploy.yml   npm test on every push and pull request; wrangler deploy on a push to main
+    LICENSE            MIT
 
 Rules of this machine (docs/DESIGN.md §9): never `git push`, never `npm install`, the
 owner deploys.
+
+## License
+
+MIT, see [LICENSE](LICENSE). `src/lz-string.mjs` is a port of lz-string 1.5.0 (MIT,
+Copyright (c) 2013 pieroxy); its notice stays at the top of the file.
+
+The research behind the design (`reports/`, `research_notes/`) is kept on the owner's
+machine and is not part of this repository (listed in `.gitignore`).

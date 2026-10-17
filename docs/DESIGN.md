@@ -4,9 +4,9 @@ Status: design accepted by the owner on 2026-10-16; implemented and verified the
 two branches (below), awaiting the owner's merge, bot creation and deploy (§7). This file is the single place a new session or model needs in
 order to continue: what is being built, why it is shaped this way, the facts that were
 measured, the invariants that must hold, how to test, how to deploy, and what is still
-the owner's decision. The research behind it is `../reports/Zulip bot and partial
-Mathlib loading.md` (six source notes in `../research_notes/`); this file repeats only
-what the implementation depends on.
+the owner's decision. The research behind it (`reports/Zulip bot and partial Mathlib loading.md`, six
+source notes in `research_notes/`) stays on the owner's machine, gitignored since
+2026-10-17; this file repeats only what the implementation depends on.
 
 ## 1. What is being built, in one paragraph
 
@@ -32,7 +32,7 @@ Decisions already taken by the owner (do not reopen):
 | Half | Repository / branch | Worktree | Deploy |
 |---|---|---|---|
 | QED64 page: `#codez=` decoding + a consent gate for top-level share links | `qed64`, branch `feature/zulip-link` (from main `52e3885`) | `/Users/fawadhaider/code/wasm64-lean-fable/qed64-wt-zulip` (node_modules symlinked to `../qed64/node_modules`, `frontend/node_modules` likewise) | merged to main by the owner; the push deploys (GitHub Actions → Cloudflare) |
-| The bot: a Cloudflare Worker answering Zulip's outgoing webhook | `qed64-zulip`, branch `feature/bot-v1` (new repo, no remote yet) | `/Users/fawadhaider/code/wasm64-lean-fable/qed64-zulip` | `wrangler deploy` by the owner (Cloudflare credentials); the Zulip bot is created by the owner in their Zulip settings |
+| The bot: a Cloudflare Worker answering Zulip's outgoing webhook | `qed64-zulip`, branch `main` (GitHub `FawadHa1der/qed64-zulip-bot`, public, MIT; the research notes stay local, gitignored) | `/Users/fawadhaider/code/wasm64-lean-fable/qed64-zulip` | pushed by the owner; GitHub Actions runs `npm test` and `wrangler deploy` on every push to main (repository secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`); the Zulip bot and its token are the owner's |
 
 The page half is a prerequisite: today a top-level `#code=` link is **silently
 ignored** by the deployed page (see §4.1), so a bot link would do nothing until the
@@ -208,7 +208,7 @@ page change ships.
   plain page opens behind a consent gate" (the threat, the measured link sizes, what
   was tested); `README.md` line 68 (`#code=` note) updated.
 
-## 5. The Worker contract (`qed64-zulip`, `feature/bot-v1`)
+## 5. The Worker contract (`qed64-zulip`, `main`)
 
 ### 5.1 Layout (no npm dependencies; Node 26 runs the tests; wrangler comes from
 `../qed64/node_modules`)
@@ -286,7 +286,7 @@ qed64-zulip/
    e2e suite (`node tests/adversarial/run.mjs --skip-compiler --skip-pretest --url …`,
    expect 24/24 incl. `shared-link-gate`), the same with `--browser firefox`, and a
    manual Playwright check of a real `#codez=` link produced by the Worker's `linkFor`.
-2. Bot: `npm test` in `qed64-zulip` (node --test); `npx --prefix ../qed64 wrangler dev`
+2. Bot: `npm test` in `qed64-zulip` (node --test); `npx --yes wrangler@4.125.0 dev`
    with a replayed fixture via `curl` (optional).
 3. No change in the default path: the e2e `boot` scenario's "no panel" assertion and
    a byte comparison of the built `dist/` CSS/JS for a page without a fragment are not
@@ -301,10 +301,14 @@ qed64-zulip/
    webhook**, full name `qed64` (the mention becomes `@**qed64**`), a username, an
    avatar if desired, **Endpoint URL** = the Worker URL (after step 3), **Interface**:
    Generic. Download its `zuliprc`; the `token` line is the webhook token.
-3. Deploy the Worker from `qed64-zulip`: `npx --prefix ../qed64 wrangler login` (once),
-   `npx --prefix ../qed64 wrangler secret put ZULIP_BOT_TOKEN` (paste the token),
-   `npx --prefix ../qed64 wrangler deploy`; note the `*.workers.dev` URL and put it in
-   the bot's Endpoint URL (step 2) if it was not known yet.
+3. Put the Worker on Cloudflare: create the GitHub repository (`FawadHa1der/qed64-zulip-bot`,
+   public, MIT), set its two repository secrets `CLOUDFLARE_API_TOKEN` (Workers Scripts:
+   Edit) and `CLOUDFLARE_ACCOUNT_ID`, push `main`; `.github/workflows/deploy.yml` runs
+   `npm test` and `wrangler deploy` (wrangler 4.125.0, pinned). Then, once, from
+   `qed64-zulip`: `npx --yes wrangler@4.125.0 login` and `npx --yes wrangler@4.125.0
+   secret put ZULIP_BOT_TOKEN` (paste the token). The Worker URL is
+   `https://qed64-zulip-bot.<account>.workers.dev`; put it in the bot's Endpoint URL
+   (step 2) if it was not known yet.
 4. Test privately: DM the bot a ```lean block; then in a quiet channel, mention it
    next to a block; then quote-and-reply a message with a block and mention it.
 5. Community step (one post in `#Zulip meta`, factual, short): what the bot does, that
@@ -331,6 +335,9 @@ qed64-zulip/
   qed64-wt-modular/work/HANDOVER-2026-10-05.md`), never committed; memory index:
   `~/.claude/projects/-Users-fawadhaider-code-wasm64-lean-fable/memory/MEMORY.md`
   (`zulip-bot-decision.md`, `zulip-link-handover.md`).
+- `qed64-zulip`: the research notes are gitignored, and the pre-2026-10-17 history
+  that contained them lives only on the local `archive/*` branches; push `main`
+  alone, never `--all` or `--mirror`.
 - Commits end with `Co-Authored-By: Claude <model> <noreply@anthropic.com>` as the
   session's attribution line says.
 - The owner's standard: the simplest maintainable architecture; docs state what was
@@ -338,11 +345,12 @@ qed64-zulip/
 
 ## 10. Status checklist (update as work lands)
 - [x] Research and decision (2026-10-16).
-- [x] Branches: `qed64` `feature/zulip-link`, `qed64-zulip` `feature/bot-v1`; this doc.
+- [x] Branches: `qed64` `feature/zulip-link`, `qed64-zulip` `feature/bot-v1` (folded into `main` on 2026-10-17); this doc.
 - [x] Page: `#codez=` + vendored LZ-string + unit tests (2026-10-16; byte-identical to lz-string 1.5.0 on 1,512 texts).
 - [x] Page: consent gate + persistence flag + e2e scenario + docs (e2e run pending, §6).
 - [x] Worker: extract/link/worker + fixtures + tests + README (49 node tests).
 - [x] Cross-check vector pinned in both repos (identical `codez`; the ports agree on 1,512 texts and on corrupt input: null).
-- [x] Verification (§6), 2026-10-16: unit 1054 green, tsc, typecheck:site, build:site; e2e on a served build of the branch 24/24 in Chromium and 24/24 in Firefox (`shared-link-gate` passing in both: gate while booting, not opened before the click, opened on click, fragment cleared, buffer untouched, 0 console errors); a link built by the Worker's own `linkFor` opened in the page, checked a Mathlib snippet to ready, left the visitor's saved buffer intact, and no gate appeared without a fragment. Page commit: `feature/zulip-link` (one commit over main 52e3885); bot commit `5c64771` on `feature/bot-v1`.
-- [ ] Owner: merge + push the page; create the bot; deploy the Worker; private tests.
+- [x] Verification (§6), 2026-10-16: unit 1054 green, tsc, typecheck:site, build:site; e2e on a served build of the branch 24/24 in Chromium and 24/24 in Firefox (`shared-link-gate` passing in both: gate while booting, not opened before the click, opened on click, fragment cleared, buffer untouched, 0 console errors); a link built by the Worker's own `linkFor` opened in the page, checked a Mathlib snippet to ready, left the visitor's saved buffer intact, and no gate appeared without a fragment. Page commit: `feature/zulip-link` (one commit over main 52e3885); bot commit "bot v1: a stateless Cloudflare Worker …", now on `main` (its hash changed when the history was rebuilt without the research notes on 2026-10-17).
+- [x] Repository prepared for GitHub (2026-10-17): history rebuilt without the research notes (now gitignored), MIT `LICENSE`, `.github/workflows/deploy.yml` (`npm test` on every push and pull request, `wrangler deploy` on a push to main).
+- [ ] Owner: merge + push the page; create the GitHub repository and its two secrets, push `main`; create the bot; `wrangler secret put ZULIP_BOT_TOKEN`; private tests.
 - [ ] Owner: the `#Zulip meta` post.

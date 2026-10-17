@@ -1,3 +1,7 @@
 .dev.vars
 .wrangler/
 node_modules/
+# The research behind the design stays on the owner's machine (decision of 2026-10-17).
+reports/
+research_notes/
+work/
