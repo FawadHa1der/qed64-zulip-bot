@@ -256,8 +256,8 @@ qed64-zulip/
   exceeds 8,000 characters (both impossible for a Zulip-sized block; the cap is a
   guard).
 - Replies (`content`, one line, Markdown, **never echoing user text**):
-  - found: `[Open in QED64](URL) · runs Lean 4 + Mathlib in your browser, nothing is
-    uploaded` (the text after the link may be shortened; keep the link first).
+  - found: `[Open in QED64](URL) · runs Lean 4 + Mathlib in desktop Chrome or Firefox,
+    nothing is uploaded` (the text after the link may be shortened; keep the link first).
   - truncated: `The code block in that message is cut off by Zulip's message limit, so I
     did not link it; paste a shorter snippet or split it.`
   - no code: `` I need a ```lean code block in the message that mentions me, or quote
@@ -337,7 +337,7 @@ qed64-zulip/
 ## 8. Open questions for the owner (defaults in bold)
 - Bot display name: **`qed64`** (the mention is `@**qed64**`; "QED64" also possible).
 - Answer direct messages too: **yes** (same reply; cheap and useful for private tests).
-- Reply tail text: **"runs Lean 4 + Mathlib in Chrome or Firefox, nothing is uploaded"** (2026-10-18: it said "in your browser" until the owner's first test opened a link in Safari, where QED64 cannot run; the page's boot card now names the same two browsers).
+- Reply tail text: **"runs Lean 4 + Mathlib in desktop Chrome or Firefox, nothing is uploaded"** (2026-10-18: it said "in your browser" until the owner's first test opened a link in Safari, where QED64 cannot run; "desktop" because every iOS browser is WebKit; the page's boot card names the same browsers).
 - Offer the playground row to the admins in the same post: **yes**.
 - v1.1 (fetch the previous message for a bare mention): **not now**; decide on logs.
 
