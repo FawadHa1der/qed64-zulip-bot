@@ -10,7 +10,7 @@ import { extractLean } from "./extract.mjs";
 import { DEFAULT_ORIGIN, linkFor } from "./link.mjs";
 
 export const REPLIES = Object.freeze({
-  found: (url) => `[Open in QED64](${url}) · runs Lean 4 + Mathlib in your browser, nothing is uploaded`,
+  found: (url) => `[Open in QED64](${url}) · runs Lean 4 + Mathlib in Chrome or Firefox, nothing is uploaded`,
   truncated:
     "The code block in that message is cut off by Zulip's message limit, so I did not link it; paste a shorter snippet or split it.",
   noCode:

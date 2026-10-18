@@ -4,7 +4,7 @@ The Cloudflare Worker behind `@**qed64**` on the Lean Zulip. A member writes `@*
 next to a Lean code block (or quotes a message that has one and mentions the bot);
 Zulip POSTs the message to this Worker; the Worker answers, in the same topic, one line:
 
-    [Open in QED64](https://qed64.fawadworkaddress.workers.dev/#codez=…) · runs Lean 4 + Mathlib in your browser, nothing is uploaded
+    [Open in QED64](https://qed64.fawadworkaddress.workers.dev/#codez=…) · runs Lean 4 + Mathlib in Chrome or Firefox, nothing is uploaded
 
 The code travels in the URL fragment (`#codez=`, LZ-string Base64 as lean4web writes it,
 or `#code=` when that is shorter), so it never reaches any server; the QED64 page shows

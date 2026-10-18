@@ -337,7 +337,7 @@ qed64-zulip/
 ## 8. Open questions for the owner (defaults in bold)
 - Bot display name: **`qed64`** (the mention is `@**qed64**`; "QED64" also possible).
 - Answer direct messages too: **yes** (same reply; cheap and useful for private tests).
-- Reply tail text: **"runs Lean 4 + Mathlib in your browser, nothing is uploaded"**.
+- Reply tail text: **"runs Lean 4 + Mathlib in Chrome or Firefox, nothing is uploaded"** (2026-10-18: it said "in your browser" until the owner's first test opened a link in Safari, where QED64 cannot run; the page's boot card now names the same two browsers).
 - Offer the playground row to the admins in the same post: **yes**.
 - v1.1 (fetch the previous message for a bare mention): **not now**; decide on logs.
 

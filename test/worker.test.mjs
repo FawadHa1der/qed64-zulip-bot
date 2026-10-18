@@ -196,5 +196,5 @@ test("the four reply texts are single lines and name no user content", () => {
     assert.doesNotMatch(text, /\n/);
     assert.ok(text.length < 300);
   }
-  assert.equal(REPLIES.found("URL"), "[Open in QED64](URL) · runs Lean 4 + Mathlib in your browser, nothing is uploaded");
+  assert.equal(REPLIES.found("URL"), "[Open in QED64](URL) · runs Lean 4 + Mathlib in Chrome or Firefox, nothing is uploaded");
 });
