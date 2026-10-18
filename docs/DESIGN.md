@@ -372,5 +372,6 @@ qed64-zulip/
 - [x] Owner: merge the page (2026-10-18, `qed64` main fast-forwarded to `013dcc9`; worktree and branch removed).
 - [x] Owner: push `qed64` main (2026-10-18; deploy green, live `013dcc9`; live preflight OK, a Worker-built link opens and checks on the live site).
 - [x] Live follow-up (2026-10-18): on a FIRST visit (nothing saved) Open stored the default example as the visitor's buffer (the flush ran with no save pending). Fixed on `qed64` branch `fix/share-link-first-visit` (worktree `qed64-wt-firstvisit`, 2 commits over local main `4b93459`): only a pending save is flushed, and the e2e scenario runs a first visit and a saved-buffer visit. Verified: unit 1055, e2e 24/24 Chromium + Firefox, the scenario alone in both, page-api 7/7; the new scenario fails against the live site (first visit stores the default example) as expected.
-- [ ] Owner: merge + push `fix/share-link-first-visit`; create the GitHub repository and its two secrets, push `main`; create the bot; `wrangler secret put ZULIP_BOT_TOKEN`; private tests.
+- [x] Owner: merge + push `fix/share-link-first-visit` (2026-10-18; live `a017745`, ci + deploy green; the scenario against the live site passes both visits in Chromium and Firefox).
+- [ ] Owner, bot repo: create the GitHub repository and its two secrets, push `main`; create the bot; `wrangler secret put ZULIP_BOT_TOKEN`; private tests.
 - [ ] Owner: the `#Zulip meta` post.
